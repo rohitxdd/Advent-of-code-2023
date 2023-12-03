@@ -22,8 +22,10 @@ def isSymbol(c: str) -> bool:
 
 ops: list[int] = [-1, 0, 1]
 
+gearDict = {}
 
-def is_part_valid(lineIndex: int, startIndex: int, length: int) -> bool:
+
+def is_part_valid(lineIndex: int, startIndex: int, length: int, gear) -> bool:
     end_index = (
         startIndex + length if startIndex + length == cols else startIndex + length + 1
     )
@@ -33,8 +35,16 @@ def is_part_valid(lineIndex: int, startIndex: int, length: int) -> bool:
         tempIndex = lineIndex + x
         line = get_line(tempIndex)
         if line:
-            for x in line[start_index:end_index]:
-                if isSymbol(x):
+            for i, x in enumerate(line):
+                if i < start_index or i >= end_index:
+                    continue
+
+                if isSymbol(x) and x == "*":
+                    tempGearIndex = f"{tempIndex}:{i}"
+                    if gearDict.get(tempGearIndex):
+                        gearDict[tempGearIndex].append(int(gear))
+                    else:
+                        gearDict[tempGearIndex] = [int(gear)]
                     return True
     return False
 
@@ -50,15 +60,22 @@ for index, line in enumerate(lines):
             if start_index < 0:
                 start_index = i
             temp += char
-        
+
         if not char.isdigit() or i + 1 == cols:
             if start_index >= 0:
-                isValid: bool = is_part_valid(index, start_index, len(temp))
+                isValid: bool = is_part_valid(index, start_index, len(temp), temp)
                 if isValid:
-                    part_nums.append(int(temp))
+                    # part_nums.append(int(temp))
+                    pass
                 else:
                     # print(temp)
                     pass
             start_index = -1
             temp = ""
-print(sum(part_nums))
+
+sum = 0
+for x in gearDict.keys():
+    if len(gearDict[x]) == 2:
+        sum += gearDict[x][0] * gearDict[x][1]
+print(sum)
+
