@@ -4,11 +4,10 @@ const [timeArr, distanceArr] = fs
   .readFileSync("./input.txt", { encoding: "utf-8" })
   .split("\n")
   .map((e) =>
-    e
+    [Number(e
       .split(":")[1]
       .split(" ")
-      .filter((e) => e)
-      .map(parseFloat)
+      .filter((e) => e).join('').trim())]
   );
 
 let res = null
