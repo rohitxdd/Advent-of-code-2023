@@ -10,7 +10,6 @@ const cardsByStrength = [
   "A",
   "K",
   "Q",
-  "J",
   "T",
   "9",
   "8",
@@ -20,6 +19,7 @@ const cardsByStrength = [
   "4",
   "3",
   "2",
+  "J",
 ];
 
 function typeOfHand(hand) {
@@ -31,6 +31,22 @@ function typeOfHand(hand) {
       charobj[char] = 1;
     }
   });
+
+  if (charobj.hasOwnProperty('J')) {
+    //max other than j
+    let x = Number.NEGATIVE_INFINITY
+    let key = null
+    Object.keys(charobj).forEach(k => {
+      if (k !== "J" && charobj[k] > x) {
+        x = charobj[k]
+        key = k
+      }
+    })
+    if (key) {
+      charobj[key] += charobj["J"]
+      delete charobj.J
+    }
+  }
 
   const arr = Object.values(charobj).sort((a, b) => b - a);
   if (arr.length === 1) {
@@ -103,8 +119,8 @@ for (let tp of [...TypeArr].reverse()) {
     startRank += rank.length
     rank = []
   }
-
 }
+
 console.log(score)
 
 
@@ -115,13 +131,9 @@ function isStronger(element, curr) {
     const e = elementArr[index];
     const c = currArr[index];
     if (e !== c) {
-      if (isNaN(e) && !isNaN(c)) {
+      if (cardsByStrength.indexOf(e) < cardsByStrength.indexOf(c)) {
         return true
-      } else if (!isNaN(e) && isNaN(c)) {
-        return false
-      } else if (cardsByStrength.indexOf(e) < cardsByStrength.indexOf(c)) {
-        return true
-      } else {
+      }else{
         return false
       }
     }
