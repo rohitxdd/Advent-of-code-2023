@@ -10,22 +10,65 @@ map.split('\n').forEach(row => {
     m.set(k, v)
 })
 
+let currNodes = []
 
-let currNode = 'AAA'
-let steps = 0
-while(currNode != 'ZZZ'){   
-    for (let i = 0; i < directions.length; i++) {
-        const dir = directions[i]
-        let v = m.get(currNode).split(',').map(e => e.replace(/[()]/g, '').trim())
-        if(dir === "L"){
-            currNode = v[0]
-        }else{
-            currNode = v[1]
-        }
-        steps ++
-        if(currNode === 'ZZZ'){
-            break
-        }
+for (const k of m.keys()) {
+    if (k.endsWith('A')) {
+        currNodes.push(k)
     }
 }
+
+const steps = new Array(currNodes.length).fill(0)
 console.log(steps)
+
+
+console.log(currNodes)
+
+
+let tempstep = 0
+currNodes.forEach((node, index) => {
+    let tempnode = node
+    while (!tempnode.endsWith('Z')) {
+        for (let i = 0; i < directions.length; i++) {
+            const dir = directions[i]
+            let v = m.get(tempnode).split(',').map(e => e.replace(/[()]/g, '').trim())
+            if (dir === "L") {
+                tempnode = v[0]
+            } else {
+                tempnode = v[1]
+            }
+            tempstep++
+            if (tempnode.endsWith('Z')) {
+                steps[index] = tempstep
+                tempstep = 0
+                break;
+            }
+        }
+    }
+})
+
+console.log(steps)
+
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+function lcm(a, b) {
+    return (a * b) / gcd(a, b);
+}
+
+function calculateLCM(numbers) {
+    if (numbers.length < 2) {
+        throw new Error('At least two numbers are required to calculate LCM.');
+    }
+
+    let result = numbers[0];
+
+    for (let i = 1; i < numbers.length; i++) {
+        result = lcm(result, numbers[i]);
+    }
+
+    return result;
+}
+
+console.log(calculateLCM(steps));
