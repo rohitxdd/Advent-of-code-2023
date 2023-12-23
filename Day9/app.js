@@ -28,8 +28,8 @@ for (const line of file) {
 
     while (true) {
         if (arrs.length > 0) {
-            let elem = arrs.pop().pop()
-            lastelement += elem
+            let elem = arrs.pop()[0]
+            lastelement = elem - lastelement
         } else {
             break
         }
